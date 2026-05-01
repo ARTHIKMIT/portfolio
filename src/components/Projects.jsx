@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FiExternalLink, FiGithub } from 'react-icons/fi';
 
@@ -43,8 +43,21 @@ const projects = [
 ];
 
 const Projects = () => {
+  const cardsRef = useRef([]);
+
+  const handleMouseMove = (e) => {
+    for (const card of cardsRef.current) {
+      if (!card) continue;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  };
+
   return (
-    <section className="section" id="projects">
+    <section className="section" id="projects" onMouseMove={handleMouseMove}>
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -57,34 +70,37 @@ const Projects = () => {
           {projects.map((project, index) => (
             <motion.div 
               key={index}
+              ref={el => cardsRef.current[index] = el}
               className="project-card"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="project-header">
-                <h3>{project.title}</h3>
-                <div className="project-links">
-                  <FiGithub size={20} className="icon-link" />
-                  <FiExternalLink size={20} className="icon-link" />
+              <div className="project-content">
+                <div className="project-header">
+                  <h3>{project.title}</h3>
+                  <div className="project-links">
+                    <FiGithub size={20} className="icon-link magnetic" />
+                    <FiExternalLink size={20} className="icon-link magnetic" />
+                  </div>
                 </div>
-              </div>
-              <h4>{project.subtitle}</h4>
-              <p className="project-desc">{project.description}</p>
-              
-              {project.features.length > 0 && (
-                <ul className="project-features">
-                  {project.features.map((feature, i) => (
-                    <li key={i}>{feature}</li>
+                <h4>{project.subtitle}</h4>
+                <p className="project-desc">{project.description}</p>
+                
+                {project.features.length > 0 && (
+                  <ul className="project-features">
+                    {project.features.map((feature, i) => (
+                      <li key={i}>{feature}</li>
+                    ))}
+                  </ul>
+                )}
+                
+                <div className="project-tech">
+                  {project.tech.map((tech, i) => (
+                    <span key={i} className="tech-tag">{tech}</span>
                   ))}
-                </ul>
-              )}
-              
-              <div className="project-tech">
-                {project.tech.map((tech, i) => (
-                  <span key={i} className="tech-tag">{tech}</span>
-                ))}
+                </div>
               </div>
             </motion.div>
           ))}
@@ -100,15 +116,44 @@ const Projects = () => {
         .project-card {
           background: var(--color-bg-secondary);
           border-radius: 12px;
-          padding: 2rem;
           display: flex;
           flex-direction: column;
           border: 1px solid rgba(255,255,255,0.05);
           transition: transform 0.3s ease, border-color 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        .project-card::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(
+            800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+            rgba(255, 255, 255, 0.06),
+            transparent 40%
+          );
+          z-index: 0;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.5s;
+        }
+        .project-card:hover::before {
+          opacity: 1;
         }
         .project-card:hover {
           transform: translateY(-5px);
           border-color: rgba(255,255,255,0.2);
+        }
+        .project-content {
+          padding: 2rem;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          position: relative;
+          z-index: 1;
         }
         .project-header {
           display: flex;

@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 
 const experiences = [
   {
@@ -30,8 +30,20 @@ const experiences = [
 ];
 
 const Experience = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start center", "end center"]
+  });
+
+  const scaleY = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   return (
-    <section className="section" id="experience">
+    <section className="section" id="experience" ref={ref}>
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -41,14 +53,19 @@ const Experience = () => {
         <h2 className="section-title">Experience<span className="gradient-text">.</span></h2>
         
         <div className="exp-timeline">
+          <motion.div 
+            className="timeline-progress"
+            style={{ scaleY }}
+          />
+          
           {experiences.map((exp, index) => (
             <motion.div 
               key={index} 
               className="exp-item"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <div className="exp-year">{exp.year}</div>
               <div className="exp-content">
@@ -76,14 +93,26 @@ const Experience = () => {
           position: absolute;
           left: 0;
           top: 0;
-          width: 1px;
+          width: 2px;
           height: 100%;
           background: rgba(255,255,255,0.1);
+          z-index: 0;
+        }
+        .timeline-progress {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 2px;
+          height: 100%;
+          background: var(--color-accent-start);
+          transform-origin: top;
+          z-index: 1;
         }
         .exp-item {
           display: flex;
           margin-bottom: 4rem;
           position: relative;
+          z-index: 2;
         }
         .exp-year {
           width: 120px;
@@ -98,14 +127,29 @@ const Experience = () => {
           position: absolute;
           left: -4px;
           top: 6px;
-          width: 9px;
-          height: 9px;
+          width: 10px;
+          height: 10px;
           border-radius: 50%;
+          background: var(--color-bg);
+          border: 2px solid var(--color-accent-start);
+          z-index: 3;
+          transition: background 0.3s;
+        }
+        .exp-item:hover .exp-year::before {
           background: var(--color-accent-start);
           box-shadow: 0 0 10px var(--color-accent-start);
         }
         .exp-content {
           flex-grow: 1;
+          background: rgba(255, 255, 255, 0.02);
+          padding: 1.5rem;
+          border-radius: 8px;
+          border: 1px solid rgba(255,255,255,0.05);
+          transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .exp-item:hover .exp-content {
+          transform: translateX(10px);
+          border-color: rgba(255,255,255,0.1);
         }
         .exp-content h3 {
           font-size: 1.5rem;

@@ -1,5 +1,35 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+
+const Magnetic = ({ children }) => {
+  const ref = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouse = (e) => {
+    const { clientX, clientY } = e;
+    const { height, width, left, top } = ref.current.getBoundingClientRect();
+    const middleX = clientX - (left + width / 2);
+    const middleY = clientY - (top + height / 2);
+    setPosition({ x: middleX * 0.3, y: middleY * 0.3 });
+  };
+
+  const reset = () => {
+    setPosition({ x: 0, y: 0 });
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouse}
+      onMouseLeave={reset}
+      animate={{ x: position.x, y: position.y }}
+      transition={{ type: "spring", stiffness: 300, damping: 20, mass: 0.5 }}
+      style={{ display: 'inline-block', cursor: 'pointer' }}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 const Navbar = () => {
   return (
@@ -10,12 +40,14 @@ const Navbar = () => {
       className="navbar"
     >
       <div className="navbar-container">
-        <div className="logo">AS.</div>
+        <Magnetic>
+          <div className="logo">AS.</div>
+        </Magnetic>
         <ul className="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#experience">Experience</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><Magnetic><a href="#about" className="magnetic">About</a></Magnetic></li>
+          <li><Magnetic><a href="#experience" className="magnetic">Experience</a></Magnetic></li>
+          <li><Magnetic><a href="#projects" className="magnetic">Projects</a></Magnetic></li>
+          <li><Magnetic><a href="#contact" className="magnetic">Contact</a></Magnetic></li>
         </ul>
       </div>
 
@@ -54,6 +86,8 @@ const Navbar = () => {
           transition: color 0.3s ease;
           text-transform: uppercase;
           letter-spacing: 0.05em;
+          padding: 0.5rem;
+          display: inline-block;
         }
         .nav-links a:hover {
           color: var(--color-text);

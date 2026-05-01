@@ -1,4 +1,6 @@
 import React from 'react';
+import { ReactLenis } from 'lenis/react';
+import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -9,8 +11,11 @@ import Contact from './components/Contact';
 
 function App() {
   return (
-    <div className="app-container">
-      <Navbar />
+    <ReactLenis root>
+      <div className="noise-overlay"></div>
+      <CustomCursor />
+      <div className="app-container">
+        <Navbar />
       <main>
         <Hero />
         <About />
@@ -38,6 +43,7 @@ function App() {
         }
       `}</style>
     </div>
+    </ReactLenis>
   );
 }
 
