@@ -4,6 +4,29 @@ import { FiExternalLink, FiGithub } from 'react-icons/fi';
 
 const projects = [
   {
+    title: "CardioAI Medical Chatbot",
+    subtitle: "AI Heart Disease Predictor",
+    description: "An AI-powered heart disease detection system that provides accurate clinical insights via a responsive frontend dashboard.",
+    tech: ["Python", "FastAPI", "SQLite", "Vision Transformers", "NLP"],
+    features: [
+      "Robust AI pipeline using Vision Transformers and contextual NLP",
+      "Secure user authentication system",
+      "Persistent patient data and AI prediction management",
+      "Professional medical report generation"
+    ]
+  },
+  {
+    title: "Fake News Detector",
+    subtitle: "BERT-based Classification System",
+    description: "An AI-powered fake news detection system utilizing a fine-tuned BERT model for real-time text classification.",
+    tech: ["Python", "BERT", "Streamlit", "Transformers", "Machine Learning"],
+    features: [
+      "Data preprocessing pipeline for Real and Fake News dataset",
+      "Robust model training and evaluation scripts",
+      "Streamlit-based web interface for real-time classification"
+    ]
+  },
+  {
     title: "InvoiceWala",
     subtitle: "GST Invoice & Payment Tracker (SaaS)",
     description: "A full-stack multi-tenant system for Indian freelancers to generate GST-compliant invoices and track payments.",
